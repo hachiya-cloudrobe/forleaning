@@ -8,7 +8,7 @@ import java.util.*;
  * マス目に置いてある状態を　-1:黒　0:なし  1:白　で表します。
  */
 public class OthelloBan {
-    // コマの表示文字
+    // コマの表示文字　黒 なし　白
     private  char [] komaChar = new char[] {'●',' ','○'};
     private  byte [][] banme;
     public static final int RowColLen = 8;
@@ -235,11 +235,17 @@ public class OthelloBan {
         return any;
     }
 
+    /**
+     * コマンドの例を表示
+     */
     private  void showCmdExample()
     {
         System.console().printf("C:4 のように入力。 qで終了。 %n");
     }
 
+    /**
+     * コマンドを入力
+     */
     private  boolean inputCommand(int turn)
     {   
         Console con = System.console(); 
@@ -284,6 +290,9 @@ public class OthelloBan {
         return true;
     }
 
+    /**
+     * 盤面を描画
+     */
     private  void drawBanme(byte[][] ban)
     {
         drawColumnLabel();
