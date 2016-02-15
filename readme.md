@@ -17,7 +17,10 @@ H                 H
 </pre>
 
 # 実行方法
-* javac OthelloBanMain.javaして、java OthelloBanMain
+
+javac OthelloBanMain.javaでコンパイルして、  
+java OthelloBanMain で実行。
+
 
 # 操作方法
 白と黒の手番が交互にくるので、コマンドプロンプトに >A:3 のようにマスを指定する。  
