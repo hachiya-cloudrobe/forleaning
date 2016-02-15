@@ -28,7 +28,7 @@ public class OthelloBanMain {
             banme[r0][c1] = 1;
             banme[r1][c0] = 1;
         }
-        System.out.println("========= オセロ盤 =========");
+        System.out.println("========== == オ セ ロ 盤 == ==========");
         showCmdExample();
         
         int turn = 1;
