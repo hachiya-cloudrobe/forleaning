@@ -4,18 +4,26 @@ import java.io.InputStreamReader;
 import java.text.MessageFormat;
 import java.util.*;
 
-public class OthelloBanMain {
-    private static char [] banChar = new char[] {'●',' ','○'};
-    private static byte [][] banme;
-    private static int rcLen = 8;   // 盤のマスの数
-    private static List<String> exitCmds = Arrays.asList("q", "quit", "exit", "bye");
-    private static List<String> passCmds = Arrays.asList("!", "pass", "p");
+/***
+ * マス目に置いてある状態を　-1:黒　0:なし  1:白　で表します。
+ */
+public class OthelloBan {
+    // コマの表示文字
+    private  char [] komaChar = new char[] {'●',' ','○'};
+    private  byte [][] banme;
+    public static final int RowColLen = 8;
+    private  int rcLen = RowColLen;   // 盤の１辺のマスの数
+    private  List<String> exitCmds = Arrays.asList("q", "quit", "exit", "bye");
+    private  List<String> passCmds = Arrays.asList("!", "pass", "p");
 
-    public static void main(String[] args) throws Exception {
-        if (args.length == 1)
-            rcLen = Integer.parseInt(args[0]);
-            
-        banme = new byte[rcLen][rcLen]; // マスをつくりました
+    /**
+     * @param len 盤の大きさを１辺のマス目の数で指定　3~9の数値　未指定時は8
+     */
+    public  void start(int len) {
+        
+        rcLen = len;
+        // 2次元配列でマスを作る    
+        banme = new byte[rcLen][rcLen];
 
         // ○●の初期配置
         if (rcLen > 3) {        
@@ -28,8 +36,9 @@ public class OthelloBanMain {
             banme[r0][c1] = 1;
             banme[r1][c0] = 1;
         }
-        System.out.println("========== == オ セ ロ 盤 == ==========");
+        System.out.println("============ オセロ盤 ============");
         showCmdExample();
+        System.out.println("----------------------------------");
         
         int turn = 1;
 
@@ -42,7 +51,13 @@ public class OthelloBanMain {
         System.out.println("終了しました。");
     }
     
-    private static boolean put(int r, int c, int v)
+    /**
+     * r,cの位置にコマを置く
+     * @param r 行 0~
+     * @param c 列 0~
+     * @param v -1:黒 0:無 1:白
+     */
+    private  boolean put(int r, int c, int v)
     {
         if (banme[r][c] != 0)
         {
@@ -220,18 +235,18 @@ public class OthelloBanMain {
         return any;
     }
 
-    private static void showCmdExample()
+    private  void showCmdExample()
     {
         System.console().printf("C:4 のように入力。 qで終了。 %n");
     }
 
-    private static boolean inputCommand(int turn)
+    private  boolean inputCommand(int turn)
     {   
         Console con = System.console(); 
         boolean accepted = false;
         
         while ( !accepted ) {
-            System.out.print(banChar[turn + 1] + "の番>");
+            System.out.print(komaChar[turn + 1] + "の番>");
 
             String command = con.readLine();
             if (exitCmds.contains(command) )return false;
@@ -250,7 +265,7 @@ public class OthelloBanMain {
                 //     showCmdExample();
                 //     continue;
                 // }
-                //con.printf("%s,%dを%sに設定します%n", r1, c1, banChar[v]);
+                //con.printf("%s,%dを%sに設定します%n", r1, c1, komaChar[v]);
 
                 int r = (int)r1 - (int)'A';
                 int c = c1 - 1;
@@ -269,7 +284,7 @@ public class OthelloBanMain {
         return true;
     }
 
-    private static void drawBanme(byte[][] ban)
+    private  void drawBanme(byte[][] ban)
     {
         drawColumnLabel();
         System.out.println();
@@ -283,7 +298,7 @@ public class OthelloBanMain {
             System.out.print(' ');
             for ( int c = 0; c < rcLen; c++ )
             {
-                System.out.print(banChar[ban[r][c] + 1]);
+                System.out.print(komaChar[ban[r][c] + 1]);
                 System.out.print(' ');
                                 
                 if (ban[r][c] < 0) {
@@ -297,13 +312,13 @@ public class OthelloBanMain {
         }
         drawColumnLabel();
         System.out.print("   ");
-        System.out.print(banChar[0]);
+        System.out.print(komaChar[0]);
         System.out.print(b);
         System.out.print(' ');
-        System.out.print(banChar[2]);
+        System.out.print(komaChar[2]);
         System.out.println(w);
     }
-    private static void drawColumnLabel()
+    private  void drawColumnLabel()
     {
         System.out.print("  ");
         for ( int c = 0; c < rcLen; c++ )
