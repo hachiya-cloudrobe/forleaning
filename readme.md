@@ -18,9 +18,9 @@ H                 H
 
 # 実行方法
 
-javac OthelloBanMain.javaでコンパイルして、  
-java OthelloBanMain で実行。
-
+javac OthelloBan.java Main.java でコンパイルして、  
+java Main で実行。
+java Main 4 のように引数を指定すると、盤の大きさを3~9で変更可能。
 
 # 操作方法
 白と黒の手番が交互にくるので、コマンドプロンプトに >A:3 のようにマスを指定する。  
