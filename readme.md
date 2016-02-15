@@ -2,7 +2,7 @@
 * version 0.1
 
 コンソールに表示するオセロ盤
-
+<pre>
   1 2 3 4 5 6 7 8   
 A                 A  
 B                 B  
@@ -14,7 +14,7 @@ G                 G
 H                 H  
   1 2 3 4 5 6 7 8    ●2 ○2  
 ○の番>  
-
+</pre>
 
 # 実行方法
 * javac OthelloBanMain.javaして、java OthelloBanMain
