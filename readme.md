@@ -3,7 +3,20 @@
 
 コンソールに表示するオセロ盤
 
-# run
+  1 2 3 4 5 6 7 8 
+A                 A
+B                 B
+C                 C
+D       ● ○       D
+E       ○ ●       E
+F                 F
+G                 G
+H                 H
+  1 2 3 4 5 6 7 8    ●2 ○2
+○の番>
+
+
+# 実行方法
 * javac OthelloBanMain.javaして、java OthelloBanMain
 
 # 操作方法
