@@ -5,7 +5,8 @@ import java.text.MessageFormat;
 import java.util.*;
 
 /***
- * マス目に置いてある状態を　-1:黒　0:なし  1:白　で表します。
+ * オセロ盤
+ * マス目に置いてあるコマの状態を -1:黒　0:なし  1:白 で表します。
  */
 public class OthelloBan {
     // コマの表示文字　黒 なし　白
@@ -42,9 +43,9 @@ public class OthelloBan {
         
         int turn = 1;
 
-        boolean conti = true;
+        boolean conti = true; // 継続フラグ 終了が入力されるまでtrue
         while (conti) {
-            drawBanme(banme);            
+            drawBanmen(banme);            
             conti = inputCommand(turn);
             turn *= -1;
         }
@@ -53,28 +54,26 @@ public class OthelloBan {
     
     /**
      * r,cの位置にコマを置く
+     * 置く位置の周囲８方向に別の色のコマがあり、その方向の先に同じ色の石がある時に、
+     * 同じ色のコマに挟まれた間を反転して同じ色にする。
      * @param r 行 0~
      * @param c 列 0~
      * @param v -1:黒 0:無 1:白
+     * @return true:置けた, false:置けなかった
      */
-    private  boolean put(int r, int c, int v)
+    private boolean put(int r, int c, int v)
     {
-        if (banme[r][c] != 0)
-        {
-           //System.console().printf("ここには置けません%n");
+        if (banme[r][c] != 0)   // すでにある場所には置けない
            return false;
-        }
         
-        byte[][] valset = new byte[rcLen][rcLen]; // ひっくり返すところ
-
-        byte[][] conv = new byte[rcLen][rcLen]; // 掛け合わせ
+        byte[][] conv = new byte[rcLen][rcLen];   // 新しく置くコマとの掛け合わせ盤を作る
         for ( int i = 0; i < rcLen; i++ )         
             for ( int j = 0; j < rcLen; j++ )
                 conv[i][j] = (byte)(banme[i][j] * v);
-        
-        // 置く位置の周囲８方向に別の色の石があり、その方向の先に同じ色の石がある。
-        // 同じ色の石に挟まれた間を反転して同じ色にする。        
 
+        byte[][] valset = new byte[rcLen][rcLen]; // 判別したひっくり返すところ
+
+ 
     {   // 下方向の反転箇所を調べる
         int j = c;
         for ( int i = r+1; i < rcLen; i++ ) {
@@ -218,11 +217,14 @@ public class OthelloBan {
             j++;      
         }        
     }
-        // drawBanme(conv);
-        // drawBanme(valset);   // 変わったところ
     
-        boolean any = false; // どこか反転する場所があったかを記憶するフラグ
-        
+        // デバッグ用
+        // drawBanmen(conv);　　　// 掛け合わせを表示
+        // drawBanmen(valset);   // 変わったところ
+    
+        boolean any = false; // どこか反転する場所が１つでもあったかを記憶するフラグ
+    
+        // 反転する場所のコマ表裏を盤面に転写   
         for ( int i = 0; i < rcLen; i++ )         
             for ( int j = 0; j < rcLen; j++ )
                 if (valset[i][j] != 0) {
@@ -231,27 +233,30 @@ public class OthelloBan {
                 }
                 
         if (any)  // 反転する場所がなかったらそこには置けない
-            banme[r][c] = (byte)v;
+            banme[r][c] = (byte)v; // コマを置く
+            
         return any;
     }
 
     /**
      * コマンドの例を表示
      */
-    private  void showCmdExample()
+    private void showCmdExample()
     {
         System.console().printf("C:4 のように入力。 qで終了。 %n");
     }
 
     /**
      * コマンドを入力
+     * @param turn -1:黒の番  1:白の番
+     * @return true:継続　false:終了が入力された
      */
-    private  boolean inputCommand(int turn)
+    private boolean inputCommand(int turn)
     {   
-        Console con = System.console(); 
-        boolean accepted = false;
+        Console con = System.console(); // ユーザーのコマンド入力を受け取るコンソール
+        boolean accepted = false;       // コマが置けたらtrue
         
-        while ( !accepted ) {
+        while (!accepted ) {
             System.out.print(komaChar[turn + 1] + "の番>");
 
             String command = con.readLine();
@@ -259,23 +264,14 @@ public class OthelloBan {
             if (passCmds.contains(command) )return true;
 
             try {
-             //   MessageFormat mf = new MessageFormat("{0},{1}={2}");
                 MessageFormat mf = new MessageFormat("{0}:{1}");
                 Object[] result = mf.parse(command);
                 char r1 = (char)((String)result[0]).toUpperCase().charAt(0);
                 int c1 = Integer.parseInt((String)result[1]);
-//                int v1 = Integer.parseInt((String)result[2]);
-                
-                // if ( v1 < 0 ||  v1 > 1 ) {
-                //     con.printf("=%dは範囲外です。%n", v1);
-                //     showCmdExample();
-                //     continue;
-                // }
-                //con.printf("%s,%dを%sに設定します%n", r1, c1, komaChar[v]);
 
                 int r = (int)r1 - (int)'A';
                 int c = c1 - 1;
-                int v = turn;    // == ) ? 1 : -1;
+                int v = turn;
                 accepted = put(r,c,v);
                 
                 if (!accepted)
@@ -293,44 +289,50 @@ public class OthelloBan {
     /**
      * 盤面を描画
      */
-    private  void drawBanme(byte[][] ban)
+    private void drawBanmen(byte[][] ban)
     {
-        drawColumnLabel();
+        int len = ban[0].length;
+        
+        // 上の列のラベルを描画
+        drawColumnLabel(len);
         System.out.println();
 
-        int w = 0;
-        int b = 0;
-        for ( int r = 0; r < rcLen; r++ )
+        int w = 0; // 白の数
+        int b = 0; // 黒の数
+        for ( int r = 0; r < len; r++ )
         {
-            char A = (char)(((int)'A') + r );
-            System.out.print(A);
+            char A = (char)(((int)'A') + r );   // 行ラベル
+            System.out.print(A);	 // 左側の行ラベル 
             System.out.print(' ');
-            for ( int c = 0; c < rcLen; c++ )
+            for ( int c = 0; c < len; c++ )
             {
                 System.out.print(komaChar[ban[r][c] + 1]);
                 System.out.print(' ');
                                 
-                if (ban[r][c] < 0) {
-                    b++;
-                }
-                else if (ban[r][c] > 0) {
-                    w++;
+                switch (ban[r][c]) {
+                    case -1: b++; break;
+                    case  1: w++; break;
+                    default: break;
                 }
             }
-            System.out.println(A);
+            System.out.println(A);	 // 右側の行ラベル 
         }
-        drawColumnLabel();
+
+        // 下の列のラベルを描画
+        drawColumnLabel(len);
         System.out.print("   ");
+        // 白黒の数を描画
         System.out.print(komaChar[0]);
         System.out.print(b);
         System.out.print(' ');
         System.out.print(komaChar[2]);
         System.out.println(w);
     }
-    private  void drawColumnLabel()
+    
+    private  void drawColumnLabel(int len)
     {
         System.out.print("  ");
-        for ( int c = 0; c < rcLen; c++ )
+        for ( int c = 0; c < len; c++ )
         {
             System.out.print(c+1);
             System.out.print(' ');
