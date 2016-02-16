@@ -18,7 +18,7 @@ public class OthelloBan {
     private  List<String> passCmds = Arrays.asList("!", "pass", "p");
 
     /**
-     * @param len 盤の大きさを１辺のマス目の数で指定　3~9の数値　未指定時は8
+     * @param len 盤の大きさを１辺のマス目の数で指定　4~9の数値　未指定時は8
      */
     public  void start(int len) {
         
@@ -27,16 +27,15 @@ public class OthelloBan {
         banme = new byte[rcLen][rcLen];
 
         // ○●の初期配置
-        if (rcLen > 3) {        
-            int r0 = rcLen / 2 - 1;
-            int r1 = r0 + 1;
-            int c0 = rcLen / 2 - 1;
-            int c1 = c0 + 1;
-            banme[r0][c0] = -1;
-            banme[r1][c1] = -1;
-            banme[r0][c1] = 1;
-            banme[r1][c0] = 1;
-        }
+        int r0 = rcLen / 2 - 1;
+        int r1 = r0 + 1;
+        int c0 = rcLen / 2 - 1;
+        int c1 = c0 + 1;
+        banme[r0][c0] = -1;
+        banme[r1][c1] = -1;
+        banme[r0][c1] = 1;
+        banme[r1][c0] = 1;
+
         System.out.println("============ オセロ盤 ============");
         showCmdExample();
         System.out.println("----------------------------------");
