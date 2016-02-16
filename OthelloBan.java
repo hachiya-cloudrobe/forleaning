@@ -4,11 +4,11 @@ import java.util.*;
 
 /***
  * オセロ盤
- * マス目に置いてあるコマの状態を -1:黒　0:なし  1:白 で表します。
+ * マス目に置いてある石の状態を -1:黒　0:なし  1:白 で表します。
  */
 public class OthelloBan
 {
-    private char [] komaChar = new char[] {'●',' ','○'};   // コマの表示文字　[0]黒 [1]なし [2]白
+    private char [] komaChar = new char[] {'●',' ','○'};   // 石の表示文字　[0]黒 [1]なし [2]白
     private byte [][] banmen;	            // 盤面 
     public static final int RowColLen = 8;	// 盤の大きさ初期値
     private int rcLen = RowColLen;          // 盤の大きさ（１辺のマスの数）
@@ -53,9 +53,9 @@ public class OthelloBan
     }
     
     /**
-     * r,cの位置にコマを置く
-     * 置く位置の周囲８方向に別の色のコマがあり、その方向の先に同じ色の石がある時に、
-     * 同じ色のコマに挟まれた間を反転して同じ色にする。
+     * r,cの位置に石を置く
+     * 置く位置の周囲８方向に別の色の石があり、その方向の延長線上に同じ色の石がある時に、
+     * その同じ色の石に挟まれた間を反転して同じ色にする。
      * @param r 行 0~
      * @param c 列 0~
      * @param v -1:黒 0:無 1:白
@@ -66,7 +66,7 @@ public class OthelloBan
         if (banmen[r][c] != 0)   // すでにある場所には置けない
            return false;
         
-        byte[][] conv = new byte[rcLen][rcLen];   // 新しく置くコマとの掛け合わせ盤を作る
+        byte[][] conv = new byte[rcLen][rcLen];   // 新しく置く石との掛け合わせ盤を作る
         for ( int i = 0; i < rcLen; i++ )         
             for ( int j = 0; j < rcLen; j++ )
                 conv[i][j] = (byte)(banmen[i][j] * v);
@@ -224,7 +224,7 @@ public class OthelloBan
     
         boolean any = false; // どこか反転する場所が１つでもあったかを記憶するフラグ
     
-        // 反転する場所のコマ表裏を盤面に転写   
+        // 反転する場所の石表裏を盤面に転写   
         for ( int i = 0; i < rcLen; i++ )         
             for ( int j = 0; j < rcLen; j++ )
                 if (valset[i][j] != 0) {
@@ -233,13 +233,13 @@ public class OthelloBan
                 }
                 
         if (any)  // 反転する場所がなかったらそこには置けない
-            banmen[r][c] = (byte)v; // コマを置く
+            banmen[r][c] = (byte)v; // 石を置く
             
         return any;
     }
 
     /**
-     * コマンドの例を表示
+     * 石ンドの例を表示
      */
     private void showCmdExample()
     {
@@ -254,7 +254,7 @@ public class OthelloBan
     private boolean inputCommand(int turn)
     {   
         Console con = System.console(); // ユーザーのコマンド入力を受け取るコンソール
-        boolean accepted = false;       // コマが置けたらtrue
+        boolean accepted = false;       // 石が置けたらtrue
         
         while (!accepted ) {
             System.out.print(komaChar[turn + 1] + "の番>");
