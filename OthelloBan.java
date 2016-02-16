@@ -6,14 +6,17 @@ import java.util.*;
  * オセロ盤
  * マス目に置いてあるコマの状態を -1:黒　0:なし  1:白 で表します。
  */
-public class OthelloBan {
-    // コマの表示文字　黒 なし　白
-    private  char [] komaChar = new char[] {'●',' ','○'};
-    private  byte [][] banmen;
-    public static final int RowColLen = 8;
-    private  int rcLen = RowColLen;   // 盤の１辺のマスの数
-    private  List<String> exitCmds = Arrays.asList("q", "quit", "exit", "bye");
-    private  List<String> passCmds = Arrays.asList("!", "pass", "p");
+public class OthelloBan
+{
+    private char [] komaChar = new char[] {'●',' ','○'};   // コマの表示文字　[0]黒 [1]なし [2]白
+    private byte [][] banmen;	            // 盤面 
+    public static final int RowColLen = 8;	// 盤の大きさ初期値
+    private int rcLen = RowColLen;          // 盤の大きさ（１辺のマスの数）
+    
+    // 終了コマンド　どれでもいい
+    private List<String> exitCmds = Arrays.asList("q", "quit", "exit", "bye");
+    // パスコマンド　どれでもいい
+    private List<String> passCmds = Arrays.asList("!", "pass", "p");
 
     /**
      * @param len 盤の大きさを１辺のマス目の数で指定　4~9の数値　未指定時は8
@@ -29,22 +32,22 @@ public class OthelloBan {
         int r1 = r0 + 1;
         int c0 = rcLen / 2 - 1;
         int c1 = c0 + 1;
-        banmen[r0][c0] = -1;
-        banmen[r1][c1] = -1;
-        banmen[r0][c1] = 1;
-        banmen[r1][c0] = 1;
+        banmen[r0][c0] = 1;  // 白にする
+        banmen[r1][c1] = 1;
+        banmen[r0][c1] = -1; // 黒にする
+        banmen[r1][c0] = -1;
 
         System.out.println("============ オセロ盤 ============");
         showCmdExample();
         System.out.println("----------------------------------");
         
-        int turn = 1;
+        int turn = -1;          // 先手は黒
 
-        boolean conti = true; // 継続フラグ 終了が入力されるまでtrue
-        while (conti) {
+        boolean conti = true;   // 継続フラグ 終了が入力されるまでtrue
+        while (conti) {	        // 終了コマンドが入力されるまで繰り返す
             drawBanmen(banmen);            
             conti = inputCommand(turn);
-            turn *= -1;
+            turn *= -1;	        // 順番を反転 
         }
         System.out.println("終了しました。");
     }
@@ -257,23 +260,23 @@ public class OthelloBan {
             System.out.print(komaChar[turn + 1] + "の番>");
 
             String command = con.readLine();
-            if (exitCmds.contains(command) )return false;
-            if (passCmds.contains(command) )return true;
+            if (exitCmds.contains(command)) return false; // 終了コマンドか 
+            if (passCmds.contains(command)) return true;  // パスコマンドか
 
             try {
-                MessageFormat mf = new MessageFormat("{0}:{1}");
+                MessageFormat mf = new MessageFormat("{0}:{1}");    // コマンドの書式
                 Object[] result = mf.parse(command);
                 char r1 = (char)((String)result[0]).toUpperCase().charAt(0);
                 int c1 = Integer.parseInt((String)result[1]);
 
-                int r = (int)r1 - (int)'A';
-                int c = c1 - 1;
-                int v = turn;
-                accepted = put(r,c,v);
+                int r = (int)r1 - (int)'A';	    // A->0 〜 H->8 変換 
+                int c = c1 - 1;	                // 1〜8 を 0〜7 に変換 
+                
+                accepted = put(r, c, turn);
                 
                 if (!accepted)
                     con.printf("そこには置けません。%n");
-                                   
+
             } catch (Exception ex)
             {
                 con.printf("書式が違います。%n");
