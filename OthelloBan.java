@@ -1,6 +1,4 @@
 import java.io.Console;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -11,7 +9,7 @@ import java.util.*;
 public class OthelloBan {
     // コマの表示文字　黒 なし　白
     private  char [] komaChar = new char[] {'●',' ','○'};
-    private  byte [][] banme;
+    private  byte [][] banmen;
     public static final int RowColLen = 8;
     private  int rcLen = RowColLen;   // 盤の１辺のマスの数
     private  List<String> exitCmds = Arrays.asList("q", "quit", "exit", "bye");
@@ -24,17 +22,17 @@ public class OthelloBan {
         
         rcLen = len;
         // 2次元配列でマスを作る    
-        banme = new byte[rcLen][rcLen];
+        banmen = new byte[rcLen][rcLen];
 
         // ○●の初期配置
         int r0 = rcLen / 2 - 1;
         int r1 = r0 + 1;
         int c0 = rcLen / 2 - 1;
         int c1 = c0 + 1;
-        banme[r0][c0] = -1;
-        banme[r1][c1] = -1;
-        banme[r0][c1] = 1;
-        banme[r1][c0] = 1;
+        banmen[r0][c0] = -1;
+        banmen[r1][c1] = -1;
+        banmen[r0][c1] = 1;
+        banmen[r1][c0] = 1;
 
         System.out.println("============ オセロ盤 ============");
         showCmdExample();
@@ -44,7 +42,7 @@ public class OthelloBan {
 
         boolean conti = true; // 継続フラグ 終了が入力されるまでtrue
         while (conti) {
-            drawBanmen(banme);            
+            drawBanmen(banmen);            
             conti = inputCommand(turn);
             turn *= -1;
         }
@@ -62,13 +60,13 @@ public class OthelloBan {
      */
     private boolean put(int r, int c, int v)
     {
-        if (banme[r][c] != 0)   // すでにある場所には置けない
+        if (banmen[r][c] != 0)   // すでにある場所には置けない
            return false;
         
         byte[][] conv = new byte[rcLen][rcLen];   // 新しく置くコマとの掛け合わせ盤を作る
         for ( int i = 0; i < rcLen; i++ )         
             for ( int j = 0; j < rcLen; j++ )
-                conv[i][j] = (byte)(banme[i][j] * v);
+                conv[i][j] = (byte)(banmen[i][j] * v);
 
         byte[][] valset = new byte[rcLen][rcLen]; // 判別したひっくり返すところ
 
@@ -227,12 +225,12 @@ public class OthelloBan {
         for ( int i = 0; i < rcLen; i++ )         
             for ( int j = 0; j < rcLen; j++ )
                 if (valset[i][j] != 0) {
-                    banme[i][j] = valset[i][j];
+                    banmen[i][j] = valset[i][j];
                     any = true;
                 }
                 
         if (any)  // 反転する場所がなかったらそこには置けない
-            banme[r][c] = (byte)v; // コマを置く
+            banmen[r][c] = (byte)v; // コマを置く
             
         return any;
     }
@@ -287,10 +285,11 @@ public class OthelloBan {
 
     /**
      * 盤面を描画
+     * @param ban 盤面を表す2次元配列
      */
     private void drawBanmen(byte[][] ban)
     {
-        int len = ban[0].length;
+        int len = ban[0].length;    // 盤面の列の長さを取得
         
         // 上の列のラベルを描画
         drawColumnLabel(len);
