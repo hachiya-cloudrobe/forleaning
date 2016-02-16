@@ -1,5 +1,5 @@
 # オセロ盤 java console
-* version 0.1
+* version 1.0
 
 コンソールに表示するオセロ盤
 <pre>
